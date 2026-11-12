@@ -1,0 +1,16 @@
+name: CAN Diag API - Test & Smoke
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: node-version: 20
+      - name: Syntax check
+        run: node --check src/server.js && node --check src/pgn-db.js
+      - name: Load PGN DB
+        run: node -e "import('./src/pgn-db.js').then(m=>{console.log('PGNs loaded:',m.listAllPgns().length)});"
